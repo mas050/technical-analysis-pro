@@ -210,7 +210,7 @@ const LandingPage = ({ onStartAnalysis }) => {
             <li>📊 Advanced technical indicators (RSI, MACD, Bollinger Bands)</li>
             <li>🎯 Support & resistance levels with Fibonacci retracements</li>
             <li>💹 Volume analysis and money flow indicators</li>
-            <li>🤖 AI-powered insights from Google Gemini</li>
+            <li>✨ AI-powered insights from Google Gemini</li>
             <li>📉 Risk metrics and performance analysis</li>
             <li>🎨 Professional charts and visualizations</li>
             <li>💡 Clear buy/sell/hold recommendations</li>
