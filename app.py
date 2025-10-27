@@ -354,4 +354,4 @@ if __name__ == '__main__':
     print("\n⚠️  Make sure to set GEMINI_API_KEY environment variable for AI insights")
     print("="*80 + "\n")
     
-    socketio.run(app, debug=False, host='127.0.0.1', port=5001)
+    socketio.run(app, debug=False, host='0.0.0.0', port=5001, allow_unsafe_werkzeug=True)
