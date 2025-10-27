@@ -6,6 +6,9 @@ import ReportViewer from './components/ReportViewer';
 import axios from 'axios';
 import io from 'socket.io-client';
 
+// Use environment variable or default to localhost for development
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001';
+
 function App() {
   const [currentView, setCurrentView] = useState('landing'); // 'landing', 'progress', 'report'
   const [sessionId, setSessionId] = useState(null);
@@ -14,7 +17,7 @@ function App() {
 
   useEffect(() => {
     // Initialize socket connection
-    const newSocket = io('http://localhost:5001/analysis', {
+    const newSocket = io(`${API_URL}/analysis`, {
       transports: ['websocket', 'polling']
     });
 
@@ -37,7 +40,7 @@ function App() {
 
   const handleStartAnalysis = async (formData) => {
     try {
-      const response = await axios.post('http://localhost:5001/api/analyze', formData, {
+      const response = await axios.post(`${API_URL}/api/analyze`, formData, {
         headers: {
           'Content-Type': 'application/json'
         }

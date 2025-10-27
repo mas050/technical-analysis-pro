@@ -3,6 +3,9 @@ import { Home, Download, Share2, Loader } from 'lucide-react';
 import axios from 'axios';
 import './ReportViewer.css';
 
+// Use environment variable or default to localhost for development
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001';
+
 const ReportViewer = ({ sessionId, analysisData, onBackToHome }) => {
   const [reportHtml, setReportHtml] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -15,7 +18,7 @@ const ReportViewer = ({ sessionId, analysisData, onBackToHome }) => {
   const loadReport = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`http://localhost:5001/api/report/${sessionId}`);
+      const response = await axios.get(`${API_URL}/api/report/${sessionId}`);
       setReportHtml(response.data);
       setIsLoading(false);
     } catch (err) {
