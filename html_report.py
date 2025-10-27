@@ -607,7 +607,7 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
 <body>
     <div class="container">
         <div class="header">
-            <h1>📊 Ultimate Technical Analysis Report</h1>
+            <h1>📊 Technical Analysis Report</h1>
             <div class="symbol">{symbol}</div>
             <div class="meta">
                 Period: {start_date} to {end_date}<br>
