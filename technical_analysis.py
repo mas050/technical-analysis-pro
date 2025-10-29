@@ -441,6 +441,7 @@ class TechnicalAnalyzer:
 
             Conclude with a Key Takeaway summarizing the most critical market insight in no more than 3 sentences.
             Use a direct, confident tone—avoid introductions or self-references.
+            Make sure each section is indented properly and follows the correct sequential order.
         """
 
         try:

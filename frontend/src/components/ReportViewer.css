@@ -3,7 +3,17 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: white;
+  background: transparent;
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .report-toolbar {
@@ -11,8 +21,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px 30px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-lg);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -28,38 +40,97 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--glass-bg-light);
   color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
+  border: 2px solid var(--glass-border);
+  border-radius: var(--radius-md);
   font-size: 1em;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base);
   backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.toolbar-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.toolbar-button:hover::before {
+  width: 200px;
+  height: 200px;
 }
 
 .toolbar-button:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: var(--glass-bg-dark);
+  border-color: var(--glass-border-light);
   transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
 }
 
 .toolbar-button:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
+}
+
+.toolbar-button svg {
+  transition: transform var(--transition-base);
+  position: relative;
+  z-index: 1;
+}
+
+.toolbar-button:hover svg {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.toolbar-button span {
+  position: relative;
+  z-index: 1;
 }
 
 .report-content {
   flex: 1;
   overflow: hidden;
-  background: #f8fafc;
+  background: transparent;
+  padding: 20px;
+  position: relative;
+}
+
+.report-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  margin: 0 20px 20px 20px;
+  pointer-events: none;
 }
 
 .report-iframe {
-  width: 100%;
-  height: 100%;
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
   border: none;
   display: block;
+  border-radius: var(--radius-lg);
+  margin: 20px;
+  position: relative;
+  z-index: 1;
+  box-shadow: var(--shadow-xl);
 }
 
 .report-loading,
@@ -71,12 +142,25 @@
   min-height: 100vh;
   padding: 40px;
   text-align: center;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .report-loading .spinner-icon {
-  color: #667eea;
+  color: var(--primary);
   animation: spin 1s linear infinite;
   margin-bottom: 20px;
+  filter: drop-shadow(0 0 20px rgba(30, 64, 175, 0.5));
 }
 
 @keyframes spin {
@@ -86,28 +170,34 @@
 }
 
 .report-loading h2 {
-  color: #1e293b;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   font-size: 1.8em;
   font-weight: 700;
 }
 
 .report-error {
-  background: white;
-  border-radius: 20px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
   max-width: 600px;
   margin: 0 auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-xl);
   padding: 60px 40px;
 }
 
 .report-error h2 {
-  color: #ef4444;
+  color: var(--error);
   font-size: 2em;
   margin-bottom: 15px;
+  text-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
 }
 
 .report-error p {
-  color: #64748b;
+  color: rgba(248, 250, 252, 0.7);
   font-size: 1.1em;
   margin-bottom: 30px;
 }

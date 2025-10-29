@@ -169,6 +169,36 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Technical Analysis Report - {symbol}</title>
     <style>
+        /* CSS Variables - Design System */
+        :root {{
+            --primary: #1e40af;
+            --primary-light: #3b82f6;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --success-light: #34d399;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --gradient-primary: linear-gradient(135deg, #1e40af 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-success: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-bg-light: rgba(255, 255, 255, 0.06);
+            --glass-bg-dark: rgba(0, 0, 0, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-border-light: rgba(255, 255, 255, 0.2);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 40px rgba(30, 64, 175, 0.3);
+            --shadow-glow-success: 0 0 40px rgba(16, 185, 129, 0.3);
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-full: 9999px;
+            --transition-base: 0.3s ease;
+        }}
+        
         * {{
             margin: 0;
             padding: 0;
@@ -178,70 +208,197 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
         body {{
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #f8fafc;
+            background: #0f172a;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }}
+        
+        /* Animated Background */
+        body::before {{
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+            z-index: -10;
+        }}
+        
+        /* Floating Orbs - Multiple animated orbs */
+        .orb {{
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: -1;
+        }}
+        
+        .orb-1 {{
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(30, 64, 175, 0.4) 0%, rgba(30, 64, 175, 0) 70%);
+            top: -10%;
+            left: -10%;
+            animation: float 20s ease-in-out infinite;
+        }}
+        
+        .orb-2 {{
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.35) 0%, rgba(236, 72, 153, 0) 70%);
+            top: 20%;
+            right: -5%;
+            animation: float 25s ease-in-out infinite 5s;
+        }}
+        
+        .orb-3 {{
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, rgba(139, 92, 246, 0) 70%);
+            bottom: -15%;
+            left: 20%;
+            animation: float 30s ease-in-out infinite 10s;
+        }}
+        
+        .orb-4 {{
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, rgba(59, 130, 246, 0) 70%);
+            bottom: 10%;
+            right: 15%;
+            animation: float 22s ease-in-out infinite 15s;
+        }}
+        
+        @keyframes float {{
+            0%, 100% {{ transform: translate(0, 0) scale(1); }}
+            33% {{ transform: translate(50px, -50px) scale(1.1); }}
+            66% {{ transform: translate(-50px, 50px) scale(0.9); }}
+        }}
+        
+        @keyframes fadeInUp {{
+            from {{
+                opacity: 0;
+                transform: translateY(30px);
+            }}
+            to {{
+                opacity: 1;
+                transform: translateY(0);
+            }}
+        }}
+        
+        @keyframes shimmer {{
+            100% {{ transform: translateX(100%); }}
+        }}
+        
+        @keyframes gradient-shift {{
+            0% {{ background-position: 0% 50%; }}
+            50% {{ background-position: 100% 50%; }}
+            100% {{ background-position: 0% 50%; }}
         }}
         
         .container {{
             max-width: 1400px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            overflow: visible;
+            animation: fadeInUp 1s ease-out;
         }}
         
         .header {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: rgba(30, 64, 175, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
             color: white;
-            padding: 40px;
+            padding: 60px 40px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-lg);
+        }}
+        
+        .header::before {{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            animation: shimmer 3s infinite;
         }}
         
         .header h1 {{
             font-size: 2.5em;
             margin-bottom: 10px;
             font-weight: 700;
+            position: relative;
+            z-index: 1;
         }}
         
         .header .symbol {{
-            font-size: 3em;
+            font-size: 3.5em;
             font-weight: 800;
             margin: 20px 0;
             letter-spacing: 2px;
+            background: linear-gradient(135deg, #fff 0%, #ec4899 50%, #f093fb 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 5s ease infinite;
+            position: relative;
+            z-index: 1;
         }}
         
         .header .meta {{
             font-size: 1.1em;
             opacity: 0.9;
+            position: relative;
+            z-index: 1;
         }}
         
         .content {{
             padding: 40px;
+            background: transparent;
         }}
         
         .section {{
-            margin-bottom: 40px;
+            margin-bottom: 60px;
+            animation: fadeInUp 0.8s ease-out;
         }}
         
         .section-title {{
             font-size: 1.8em;
             font-weight: 700;
-            color: #667eea;
+            color: #f8fafc;
             margin-bottom: 20px;
             padding-bottom: 10px;
-            border-bottom: 3px solid #667eea;
+            border-bottom: 3px solid rgba(30, 64, 175, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }}
         
         .signal-box {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--glass-bg-light);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border-light);
             color: white;
-            padding: 30px;
-            border-radius: 15px;
+            padding: 40px;
+            border-radius: var(--radius-lg);
             text-align: center;
             margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            box-shadow: var(--shadow-glow);
         }}
         
         .signal-box .signal {{
@@ -256,30 +413,33 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
         }}
         
         .badge-buy {{
-            background: #10b981;
+            background: var(--gradient-success);
             color: white;
-            padding: 8px 20px;
-            border-radius: 25px;
+            padding: 12px 28px;
+            border-radius: var(--radius-full);
             font-weight: 700;
             display: inline-block;
+            box-shadow: var(--shadow-glow-success);
         }}
         
         .badge-sell {{
-            background: #ef4444;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             color: white;
-            padding: 8px 20px;
-            border-radius: 25px;
+            padding: 12px 28px;
+            border-radius: var(--radius-full);
             font-weight: 700;
             display: inline-block;
+            box-shadow: 0 0 40px rgba(239, 68, 68, 0.3);
         }}
         
         .badge-hold {{
-            background: #f59e0b;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             color: white;
-            padding: 8px 20px;
-            border-radius: 25px;
+            padding: 12px 28px;
+            border-radius: var(--radius-full);
             font-weight: 700;
             display: inline-block;
+            box-shadow: 0 0 40px rgba(245, 158, 11, 0.3);
         }}
         
         .metrics-grid {{
@@ -290,21 +450,25 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
         }}
         
         .metric-card {{
-            background: #f8fafc;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
             padding: 20px;
-            border-radius: 12px;
-            border-left: 4px solid #667eea;
-            transition: transform 0.2s, box-shadow 0.2s;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--glass-border);
+            border-left: 4px solid var(--primary);
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-md);
         }}
         
         .metric-card:hover {{
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+            border-color: var(--glass-border-light);
         }}
         
         .metric-card .label {{
             font-size: 0.9em;
-            color: #64748b;
+            color: rgba(248, 250, 252, 0.6);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -314,42 +478,46 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
         .metric-card .value {{
             font-size: 1.8em;
             font-weight: 700;
-            color: #1e293b;
+            color: #f8fafc;
         }}
         
         .metric-card .subtext {{
             font-size: 0.85em;
-            color: #64748b;
+            color: rgba(248, 250, 252, 0.6);
             margin-top: 5px;
         }}
         
         .text-success {{
-            color: #10b981;
+            color: var(--success-light);
         }}
         
         .text-danger {{
-            color: #ef4444;
+            color: var(--error);
         }}
         
         .text-warning {{
-            color: #f59e0b;
+            color: var(--warning);
         }}
         
         .text-muted {{
-            color: #64748b;
+            color: rgba(248, 250, 252, 0.5);
         }}
         
         .signals-list {{
-            background: #f8fafc;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
             padding: 20px;
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             margin-bottom: 20px;
+            box-shadow: var(--shadow-md);
         }}
         
         .signals-list h4 {{
             font-size: 1.2em;
             margin-bottom: 15px;
-            color: #1e293b;
+            color: #f8fafc;
+            font-weight: 700;
         }}
         
         .signals-list ul {{
@@ -359,8 +527,9 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
         
         .signals-list li {{
             padding: 10px 0;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid var(--glass-border);
             font-size: 1.05em;
+            color: rgba(248, 250, 252, 0.9);
         }}
         
         .signals-list li:last-child {{
@@ -369,49 +538,59 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
         
         .signals-list li:before {{
             content: "✓ ";
-            color: #10b981;
+            color: var(--success);
             font-weight: bold;
             margin-right: 8px;
         }}
         
         .signals-list.bearish li:before {{
             content: "✗ ";
-            color: #ef4444;
+            color: var(--error);
         }}
         
         .chart-container {{
             margin: 30px 0;
             text-align: center;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
         }}
         
         .chart-container img {{
             max-width: 100%;
             height: auto;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-xl);
         }}
         
         .chart-title {{
             font-size: 1.3em;
-            font-weight: 600;
-            color: #1e293b;
+            font-weight: 700;
+            color: #ffffff;
             margin-bottom: 15px;
         }}
         
         .ai-insights {{
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            background: var(--glass-bg-light);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(245, 158, 11, 0.3);
             padding: 30px;
-            border-radius: 15px;
-            border-left: 5px solid #f59e0b;
+            border-radius: var(--radius-lg);
+            border-left: 5px solid var(--warning);
             margin: 30px 0;
+            box-shadow: 0 0 40px rgba(245, 158, 11, 0.2);
         }}
         
         .ai-insights h3 {{
-            color: #92400e;
+            color: #fbbf24;
             font-size: 1.5em;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
+            font-weight: 700;
         }}
         
         .ai-insights h3:before {{
@@ -421,27 +600,27 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
         }}
         
         .ai-insights .content {{
-            color: #451a03;
+            color: rgba(248, 250, 252, 0.9);
             line-height: 1.8;
             font-size: 1.05em;
         }}
         
         .ai-insights .content h1 {{
-            color: #92400e;
+            color: #fbbf24;
             font-size: 1.8em;
             margin: 25px 0 15px 0;
             font-weight: 700;
         }}
         
         .ai-insights .content h2 {{
-            color: #92400e;
+            color: #fbbf24;
             font-size: 1.5em;
             margin: 20px 0 12px 0;
             font-weight: 600;
         }}
         
         .ai-insights .content h3 {{
-            color: #92400e;
+            color: #fbbf24;
             font-size: 1.3em;
             margin: 18px 0 10px 0;
             font-weight: 600;
@@ -453,7 +632,7 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
         }}
         
         .ai-insights .content h4 {{
-            color: #92400e;
+            color: #fbbf24;
             font-size: 1.15em;
             margin: 15px 0 8px 0;
             font-weight: 600;
@@ -461,12 +640,12 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
         
         .ai-insights .content strong {{
             font-weight: 700;
-            color: #78350f;
+            color: #fde68a;
         }}
         
         .ai-insights .content em {{
             font-style: italic;
-            color: #78350f;
+            color: #fde68a;
         }}
         
         .ai-insights .content ul {{
@@ -485,12 +664,12 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
         }}
         
         .ai-insights .content code {{
-            background: rgba(120, 53, 15, 0.1);
+            background: rgba(245, 158, 11, 0.2);
             padding: 2px 6px;
             border-radius: 4px;
             font-family: 'Courier New', monospace;
             font-size: 0.95em;
-            color: #78350f;
+            color: #fde68a;
         }}
         
         .ai-insights .content p {{
@@ -498,10 +677,13 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
         }}
         
         .fibonacci-levels {{
-            background: #f8fafc;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
             padding: 20px;
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             margin: 20px 0;
+            box-shadow: var(--shadow-md);
         }}
         
         .fibonacci-levels table {{
@@ -513,24 +695,30 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
         .fibonacci-levels td {{
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid var(--glass-border);
+            color: rgba(248, 250, 252, 0.9);
         }}
         
         .fibonacci-levels th {{
-            background: #667eea;
+            background: var(--gradient-primary);
             color: white;
             font-weight: 600;
         }}
         
         .fibonacci-levels tr:hover {{
-            background: #f1f5f9;
+            background: var(--glass-bg-light);
         }}
         
         .footer {{
-            background: #1e293b;
+            background: rgba(15, 23, 42, 0.3);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
             color: white;
             padding: 30px;
             text-align: center;
+            margin-top: 60px;
+            box-shadow: var(--shadow-lg);
         }}
         
         .footer p {{
@@ -539,20 +727,24 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
         }}
         
         .disclaimer {{
-            background: #fef2f2;
-            border-left: 4px solid #ef4444;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--error);
+            border-left: 4px solid var(--error);
             padding: 20px;
-            border-radius: 8px;
+            border-radius: var(--radius-md);
             margin: 30px 0;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);
         }}
         
         .disclaimer h4 {{
-            color: #991b1b;
+            color: var(--error);
             margin-bottom: 10px;
+            font-weight: 700;
         }}
         
         .disclaimer p {{
-            color: #7f1d1d;
+            color: rgba(248, 250, 252, 0.8);
             font-size: 0.95em;
         }}
         
@@ -560,6 +752,12 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
             body {{
                 background: white;
                 padding: 0;
+            }}
+            
+            body::before,
+            body::after,
+            .orb {{
+                display: none !important;
             }}
             
             .container {{
@@ -605,6 +803,12 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
     </style>
 </head>
 <body>
+    <!-- Animated Background Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+    
     <div class="container">
         <div class="header">
             <h1>📊 Technical Analysis Report</h1>
@@ -845,7 +1049,7 @@ def generate_html_report(symbol: str, analysis_results: Dict, charts_dir: str = 
             <!-- AI Insights -->
             <section class="section">
                 <div class="ai-insights">
-                    <h3>AI-Powered Expert Insights (Google Gemini 2.5 Flash)</h3>
+                    <h3>Asset Evaluation & Risk Profile</h3>
                     <div class="content">{ai_insights_html}</div>
                 </div>
             </section>

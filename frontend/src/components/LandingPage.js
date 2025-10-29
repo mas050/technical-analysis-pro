@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, Calendar, Search, Sparkles } from 'lucide-react';
+import { TrendingUp, Calendar, Search, Sparkles, ChevronDown } from 'lucide-react';
 import axios from 'axios';
 import './LandingPage.css';
 
@@ -62,6 +62,8 @@ const LandingPage = ({ onStartAnalysis }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    console.log('Form submitted with data:', formData);
+    
     if (!formData.symbol) {
       alert('Please select a symbol');
       return;
@@ -69,9 +71,12 @@ const LandingPage = ({ onStartAnalysis }) => {
 
     setIsLoading(true);
     try {
+      console.log('Calling onStartAnalysis...');
       await onStartAnalysis(formData);
+      console.log('onStartAnalysis completed successfully');
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error in handleSubmit:', error);
+      alert('Failed to start analysis: ' + error.message);
       setIsLoading(false);
     }
   };
@@ -94,6 +99,9 @@ const LandingPage = ({ onStartAnalysis }) => {
           <span className="feature-badge">
             <Calendar size={16} /> Historical Analysis
           </span>
+        </div>
+        <div className="scroll-indicator">
+          <ChevronDown size={32} />
         </div>
       </div>
 
